@@ -14,7 +14,7 @@ const initialBoardState: BoardState = {
 };
 
 const initialIndexState: IndexState = {
-  boardIndex: 0,
+  boardIndex: -1,
   statusIndex: -1,
 };
 
@@ -43,20 +43,53 @@ const createBoardSlice: StateCreator<
     }),
   addTask: (task, boardIndex, statusIndex) =>
     set((state) => {
-      state;
+      state.boards[boardIndex].statuses[statusIndex].tasks.push(task);
+      state.boards[boardIndex].statuses[statusIndex].totalTasks =
+        state.boards[boardIndex].statuses[statusIndex].tasks.length;
     }),
-  EditTask: (task, boardIndex, statusIndex) => {},
+
   deleteTask: (taskId, boardIndex, statusIndex) =>
     set((state) => {
       state.boards[boardIndex].statuses[statusIndex].tasks = state.boards[
         boardIndex
       ].statuses[statusIndex].tasks.filter((task) => task.id !== taskId);
+      state.boards[boardIndex].statuses[statusIndex].totalTasks =
+        state.boards[boardIndex].statuses[statusIndex].tasks.length;
     }),
-
-  updateTotalTasks: () => {
+  EditTask: (task, boardIndex, statusIndex) => {},
+  changeStatus(task, newStatusId, boardIndex) {
     set((state) => {
-      state.boards[0].statuses[0].totalTasks =
-        state.boards[0].statuses[0].tasks.length;
+      const board = state.boards[boardIndex];
+
+      board.statuses.forEach((status) => {
+        const taskIndex = status.tasks.findIndex((t) => t.id === task.id);
+        if (taskIndex !== -1) {
+          status.tasks.splice(taskIndex, 1);
+          status.totalTasks = status.tasks.length;
+        }
+      });
+
+      const newStatusIndex = board.statuses.findIndex(
+        (status) => status.id === newStatusId
+      );
+      if (newStatusIndex !== -1) {
+        board.statuses[newStatusIndex].tasks.push(task);
+        board.statuses[newStatusIndex].totalTasks =
+          board.statuses[newStatusIndex].tasks.length;
+      }
+    });
+  },
+  subTaskToggle: (taskId, subTaskId, boardIndex, statusIndex) => {
+    set((state) => {
+      state.boards[boardIndex].statuses[statusIndex].tasks.map((task) => {
+        if (task.id === taskId) {
+          task.subTasks.map((subTask) => {
+            if (subTask.id === subTaskId) {
+              subTask.done = !subTask.done;
+            }
+          });
+        }
+      });
     });
   },
 });
@@ -102,7 +135,6 @@ useBoardStore.subscribe(
   (state) => state.boards,
   () => {
     useBoardStore.getState().updateTotalBoards();
-    //useBoardStore.getState().updateTotalTasks();
   },
   { equalityFn: shallow, fireImmediately: true }
 );

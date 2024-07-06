@@ -7,11 +7,8 @@ export default function AddNewBoardDialog({
   handleClose: () => void;
 }) {
   return (
-    <DialogContent
-      className="w-4/5 max-w-[500px] rounded-lg"
-      aria-describedby={undefined}
-    >
-      <DialogHeader className="flex flex-col items-start text-left">
+    <DialogContent aria-describedby={undefined}>
+      <DialogHeader>
         <DialogTitle>Add New Board</DialogTitle>
       </DialogHeader>
 

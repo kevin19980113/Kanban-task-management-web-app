@@ -8,11 +8,12 @@ import { ThemeProvider } from "./context/ThemeProvider";
 import { useState } from "react";
 
 function App() {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
+
   return (
     <ThemeProvider>
       <MaxWidthWrapper>
@@ -25,7 +26,7 @@ function App() {
             <Header isSidebarVisible={isSidebarVisible} />
             <MainBoard />
             <Button
-              className="absolute -left-1 bottom-10 md:block hidden rounded-r-full"
+              className="absolute -left-3 bottom-10 md:block hidden rounded-r-full"
               onClick={() => toggleSidebar()}
             >
               <Eye className="size-5" />

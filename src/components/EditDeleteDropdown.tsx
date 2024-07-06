@@ -7,28 +7,29 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "./ui/dropdown-menu";
-import AddNewBoardDialog from "./AddNewBoardDialog";
 import { useBoardStore } from "@/hooks/use-board";
 import { AlertDialog, AlertDialogTrigger } from "./ui/alert-dialog";
 import { useShallow } from "zustand/react/shallow";
-import BoarderList from "./BoarderList";
-import DeleteBoardDialog from "./DeleteBoardDialog";
+import DeleteDialog from "./DeleteDialog";
+import { Task } from "@/types/board";
 
-export default function MobileBoardDropDown() {
-  // const { boardIndex, boards } = useBoardStore(
-  //   useShallow((state) => ({
-  //     boards: state.boards,
-  //     boardIndex: state.boardIndex,
-  //   }))
-  // );
+export default function EditDeleteDropdown({
+  sort,
+  task,
+}: {
+  sort: "Board" | "Task";
+  task?: Task;
+}) {
+  const { boards, boardIndex } = useBoardStore(
+    useShallow((state) => ({
+      boards: state.boards,
+      boardIndex: state.boardIndex,
+    }))
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-  };
-
-  const handleDropdownClose = () => {
+  const closeDropdown = () => {
     setIsDropdownOpen(false);
   };
 
@@ -53,16 +54,26 @@ export default function MobileBoardDropDown() {
           >
             <div className="w-full flex flex-col items-center gap-y-2">
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-destructive">
-                  Delete Board
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:bg-red-200 hover:text-destructive dark:text-destructive dark:hover:bg-red-200 dark:hover:text-destructive"
+                  onClick={() => closeDropdown()}
+                >
+                  {`Delete ${sort}`}
                 </Button>
               </AlertDialogTrigger>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DeleteBoardDialog
-          sort="board"
-          description="Are you sure you want to delete this board?"
+        <DeleteDialog
+          sort={sort}
+          description={`Are you sure you want to delete the '${
+            sort === "Board"
+              ? boards[boardIndex] && boards[boardIndex].title
+              : task?.title
+          }' ${sort}? This action will remove all columns and tasks and can not be reversed.`}
+          task={task}
         />
       </Dialog>
     </AlertDialog>

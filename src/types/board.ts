@@ -1,23 +1,30 @@
-type subTask = {
+export type SubTask = {
+  id: string;
   title: string;
   done: boolean;
 };
 
-type Task = {
+export type Task = {
   id: string;
   title: string;
   description: string;
-  subTasks: subTask[];
+  subTasks: SubTask[];
 };
 
 type TaskAction = {
   addTask: (task: Task, boardIndex: number, statusIndex: number) => void;
   EditTask: (task: Task, boardIndex: number, statusIndex: number) => void;
   deleteTask: (taskId: string, boardIndex: number, statusIndex: number) => void;
+  subTaskToggle: (
+    taskId: string,
+    subTaskId: string,
+    boardIndex: number,
+    statusIndex: number
+  ) => void;
+  changeStatus: (task: Task, newStatusId: string, boardIndex: number) => void;
 };
 
 type StatusAction = {
-  updateTotalTasks: () => void;
   addStatus: (status: StatusState, boardIndex: number) => void;
 };
 

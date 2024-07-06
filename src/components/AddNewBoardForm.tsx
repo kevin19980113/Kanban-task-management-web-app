@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import ColumnsInput from "./ColumnsInput";
+import DynamicInput from "./DynamicInput";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -25,9 +25,11 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
     },
   });
 
-  const { addBoard } = useBoardStore(
+  const { addBoard, setBoardIndex, totalBoards } = useBoardStore(
     useShallow((state) => ({
       addBoard: state.addBoard,
+      setBoardIndex: state.setBoardIndex,
+      totalBoards: state.totalBoards,
     }))
   );
 
@@ -44,6 +46,7 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
       statuses,
     };
     addBoard(boardData);
+    setBoardIndex(totalBoards);
     onClose();
   };
 
@@ -53,13 +56,11 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
       onSubmit={handleSubmit(handleAddBoard)}
     >
       <div className="grid grid-cols-1 items-left gap-y-3">
-        <Label htmlFor="name" className="text-xs md:text-sm text-medium-grey">
-          Board Name
-        </Label>
+        <Label htmlFor="name">Board Name</Label>
         <Input
           {...register("boardName")}
           placeholder="e.g Web Design"
-          className={cn("text-xs md:text-sm", {
+          className={cn({
             "border-red-500 focus-visible:ring-red-500": errors.boardName,
           })}
         />
@@ -69,11 +70,16 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
           </p>
         )}
       </div>
-      <ColumnsInput register={register} errors={errors} control={control} />
+      <DynamicInput
+        control={control}
+        register={register}
+        errors={errors}
+        fieldName="columns"
+        label="Board Columns"
+        placeholder="e.g Design"
+      />
 
-      <Button type="submit" className="text-xs md:text-sm">
-        Create New Board
-      </Button>
+      <Button type="submit">Create New Board</Button>
     </form>
   );
 }

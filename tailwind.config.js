@@ -33,7 +33,7 @@ module.exports = {
         "main-purple": "rgb(99, 59, 199)",
         "main-purple-hover": "rgb(168,164,255)",
         black: "rgb(0,1,18)",
-        "very-dark-grey ": "rgb(32,33,34)",
+        "very-dark-grey": "rgb(32,33,34)",
         "dark-grey": "rgb(43,44,45)",
         "lines-dark": "rgb(62,63,78)",
         "medium-grey": "rgb(130,143,163)",
