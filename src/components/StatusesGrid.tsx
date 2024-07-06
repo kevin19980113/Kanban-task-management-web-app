@@ -1,6 +1,7 @@
 import { useBoardStore } from "@/hooks/use-board";
 import { useShallow } from "zustand/react/shallow";
 import TaskCard from "./TaskCard";
+import AddNewColumnDialog from "./AddNewColumnDialog";
 
 export default function StatusesGrid() {
   const { boards, boardIndex } = useBoardStore(
@@ -12,9 +13,11 @@ export default function StatusesGrid() {
 
   return (
     <div
-      className="w-full flex-grow overflow-scroll p-4 md:p-8 grid"
+      className="w-full flex-grow p-4 md:p-8 grid"
       style={{
-        gridTemplateColumns: `repeat(${boards[boardIndex].statuses.length}, minmax(250px, 1fr))`,
+        gridTemplateColumns: `repeat(${
+          boards[boardIndex].statuses.length + 1
+        }, minmax(250px, 1fr))`,
       }}
     >
       {boards[boardIndex].statuses.map((status) => (
@@ -27,6 +30,7 @@ export default function StatusesGrid() {
           </div>
         </div>
       ))}
+      <AddNewColumnDialog sort="IN COLUMN" />
     </div>
   );
 }

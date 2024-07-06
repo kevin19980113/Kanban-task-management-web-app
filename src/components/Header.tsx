@@ -19,7 +19,7 @@ export default function Header({
   return (
     <header className="w-full h-20 flex items-center bg-white dark:bg-dark-grey px-4 border-b border-light-grey dark:border-lines-dark">
       <div className="w-full flex items-center justify-between gap-x-2">
-        <div className="flex flex-grow min-w-0 overflow-hidden items-center gap-x-3">
+        <div className="flex flex-auto overflow-hidden items-center gap-x-3">
           {!isSidebarVisible && (
             <div className="flex-shrink-0 items-center gap-x-2 hidden md:flex">
               <div className="size-4 md:w-36 md:size-10 bg-logo-mobile md:bg-logo-dark md:dark:bg-logo-light bg-contain bg-no-repeat bg-center"></div>
@@ -37,7 +37,9 @@ export default function Header({
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-x-2 w-auto w-min-0">
-          {boardIndex >= 0 && <AddNewTaskDialog />}
+          {boardIndex >= 0 && boards[boardIndex].statuses.length > 0 && (
+            <AddNewTaskDialog />
+          )}
 
           {boardIndex >= 0 && <EditDeleteDropdown sort="Board" />}
         </div>

@@ -1,11 +1,27 @@
 import { z } from "zod";
 
-const columnSchema = z.object({
-  column: z.string().min(1, "Column is required"),
+export const ColumnSchema = z.object({
+  column: z
+    .string()
+    .min(1, "Column is required")
+    .refine((value) => value.trim().length > 0, {
+      message: "Column cannot be only whitespace",
+    }),
+});
+
+export const ColumnArraySchema = z.object({
+  column: z.string().refine((value) => value.trim().length > 0, {
+    message: "Column cannot be only whitespace",
+  }),
 });
 
 const subTaskSchema = z.object({
-  subTask: z.string().min(1, "Subtask is required"),
+  subTask: z
+    .string()
+    .min(1, "Subtask is required")
+    .refine((value) => value.trim().length > 0, {
+      message: "Status cannot be only whitespace",
+    }),
 });
 
 export const BoardSchema = z.object({
@@ -16,10 +32,11 @@ export const BoardSchema = z.object({
     })
     .max(30, {
       message: "Board name must be less than 30 characters",
+    })
+    .refine((value) => value.trim().length > 0, {
+      message: "Board name cannot be only whitespace",
     }),
-  columns: z.array(columnSchema).min(1, {
-    message: "At least one column is required",
-  }),
+  columns: z.array(ColumnArraySchema),
 });
 
 export const TaskSchema = z.object({
@@ -30,6 +47,9 @@ export const TaskSchema = z.object({
     })
     .max(100, {
       message: "Task title must be less than 50 characters",
+    })
+    .refine((value) => value.trim().length > 0, {
+      message: "Task title cannot be only whitespace",
     }),
   description: z
     .string()
@@ -38,6 +58,9 @@ export const TaskSchema = z.object({
     })
     .max(1000, {
       message: "Task description must be less than 1000 characters",
+    })
+    .refine((value) => value.trim().length > 0, {
+      message: "Task description cannot be only whitespace",
     }),
   subTasks: z.array(subTaskSchema).min(1, {
     message: "At least one subtask is required",
@@ -49,3 +72,4 @@ export const TaskSchema = z.object({
 
 export type BoardSchemaType = z.infer<typeof BoardSchema>;
 export type TaskSchemaType = z.infer<typeof TaskSchema>;
+export type ColumnSchemaType = z.infer<typeof ColumnSchema>;

@@ -52,7 +52,7 @@ export default function DeleteDialog({
             switch (sort) {
               case "Board":
                 deleteBoard(boards[boardIndex].id);
-                setBoardIndex(-1);
+                setBoardIndex(boardIndex - 1);
                 break;
               case "Task":
                 if (task) {

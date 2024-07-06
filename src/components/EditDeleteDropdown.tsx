@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
-import { Dialog } from "./ui/dialog";
+import { Dialog, DialogTrigger } from "./ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogTrigger } from "./ui/alert-dialog";
 import { useShallow } from "zustand/react/shallow";
 import DeleteDialog from "./DeleteDialog";
 import { Task } from "@/types/board";
+import EditDialog from "./EditDialog";
 
 export default function EditDeleteDropdown({
   sort,
@@ -31,6 +32,9 @@ export default function EditDeleteDropdown({
 
   const closeDropdown = () => {
     setIsDropdownOpen(false);
+  };
+  const closeDialog = () => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -52,17 +56,28 @@ export default function EditDeleteDropdown({
             sideOffset={30}
             align="start"
           >
-            <div className="w-full flex flex-col items-center gap-y-2">
+            <div className="w-full flex flex-col items-start gap-y-2 px-4">
               <AlertDialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-destructive hover:bg-red-200 hover:text-destructive dark:text-destructive dark:hover:bg-red-200 dark:hover:text-destructive"
+                  className="text-destructive hover:bg-red-200 hover:text-destructive dark:text-destructive dark:hover:bg-red-200 dark:hover:text-destructive
+                  justify-start w-full"
                   onClick={() => closeDropdown()}
                 >
                   {`Delete ${sort}`}
                 </Button>
               </AlertDialogTrigger>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => closeDropdown()}
+                >
+                  {`Edit ${sort}`}
+                </Button>
+              </DialogTrigger>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -75,6 +90,7 @@ export default function EditDeleteDropdown({
           }' ${sort}? This action will remove all columns and tasks and can not be reversed.`}
           task={task}
         />
+        <EditDialog sort={sort} handleDialogClose={closeDialog} task={task} />
       </Dialog>
     </AlertDialog>
   );

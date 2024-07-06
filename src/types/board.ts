@@ -12,8 +12,13 @@ export type Task = {
 };
 
 type TaskAction = {
-  addTask: (task: Task, boardIndex: number, statusIndex: number) => void;
-  EditTask: (task: Task, boardIndex: number, statusIndex: number) => void;
+  addTask: (newTask: Task, boardIndex: number, newStatusIndex: number) => void;
+  EditTask: (
+    editedTask: Task,
+    boardIndex: number,
+    statusIndex: number,
+    isEditedStatus: boolean
+  ) => void;
   deleteTask: (taskId: string, boardIndex: number, statusIndex: number) => void;
   subTaskToggle: (
     taskId: string,
@@ -25,7 +30,7 @@ type TaskAction = {
 };
 
 type StatusAction = {
-  addStatus: (status: StatusState, boardIndex: number) => void;
+  addStatus: (newStatus: StatusState, boardIndex: number) => void;
 };
 
 export type StatusState = {
@@ -47,7 +52,7 @@ export type BoardState = {
 };
 
 type BoardAction = {
-  addBoard: (board: Board) => void;
+  addBoard: (newBoard: Board) => void;
   deleteBoard: (boardId: string) => void;
   updateTotalBoards: () => void;
 };

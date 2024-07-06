@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, isTitleDuplicate } from "@/lib/utils";
 import DynamicInput from "./DynamicInput";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -10,6 +10,7 @@ import { useBoardStore } from "@/hooks/use-board";
 import { useShallow } from "zustand/react/shallow";
 import { v4 as uuidv4 } from "uuid";
 import { Board } from "@/types/board";
+import { toast } from "sonner";
 
 export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
   const {
@@ -21,12 +22,12 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
     resolver: zodResolver(BoardSchema),
     defaultValues: {
       boardName: "",
-      columns: [{ column: "" }],
     },
   });
 
-  const { addBoard, setBoardIndex, totalBoards } = useBoardStore(
+  const { boards, addBoard, setBoardIndex, totalBoards } = useBoardStore(
     useShallow((state) => ({
+      boards: state.boards,
       addBoard: state.addBoard,
       setBoardIndex: state.setBoardIndex,
       totalBoards: state.totalBoards,
@@ -34,6 +35,11 @@ export default function AddNewBoardForm({ onClose }: { onClose: () => void }) {
   );
 
   const handleAddBoard = (formData: BoardSchemaType) => {
+    if (isTitleDuplicate(formData.boardName, "Board", boards)) {
+      toast.warning(`Board name '${formData.boardName}' already exists!`);
+      return;
+    }
+
     const statuses = formData.columns.map((column) => ({
       id: uuidv4(),
       title: column.column,

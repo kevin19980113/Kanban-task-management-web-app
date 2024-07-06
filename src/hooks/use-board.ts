@@ -25,9 +25,9 @@ const createBoardSlice: StateCreator<
   BoardSlice
 > = (set) => ({
   ...initialBoardState,
-  addBoard: (board) =>
+  addBoard: (newBoard) =>
     set((state) => {
-      state.boards.push(board);
+      state.boards.push(newBoard);
     }),
   deleteBoard: (boardId) =>
     set((state) => {
@@ -37,17 +37,43 @@ const createBoardSlice: StateCreator<
     set((state) => {
       state.totalBoards = state.boards.length;
     }),
-  addStatus: (status, boardIndex) =>
+  addStatus: (newStatus, boardIndex) =>
     set((state) => {
-      state.boards[boardIndex].statuses.push(status);
+      state.boards[boardIndex].statuses.push(newStatus);
     }),
-  addTask: (task, boardIndex, statusIndex) =>
+  addTask: (newTask, boardIndex, newStatusIndex) =>
     set((state) => {
-      state.boards[boardIndex].statuses[statusIndex].tasks.push(task);
-      state.boards[boardIndex].statuses[statusIndex].totalTasks =
-        state.boards[boardIndex].statuses[statusIndex].tasks.length;
+      state.boards[boardIndex].statuses[newStatusIndex].tasks.push(newTask);
+      state.boards[boardIndex].statuses[newStatusIndex].totalTasks =
+        state.boards[boardIndex].statuses[newStatusIndex].tasks.length;
     }),
+  EditTask: (editedTask, boardIndex, statusIndex, isEditedStatus) => {
+    set((state) => {
+      const board = state.boards[boardIndex];
 
+      if (!isEditedStatus) {
+        board.statuses[statusIndex].tasks = board.statuses[
+          statusIndex
+        ].tasks.map((task) => (task.id === editedTask.id ? editedTask : task));
+        return;
+      }
+
+      for (let i = 0; i < board.statuses.length; i++) {
+        const oldStatusTaskIndex = board.statuses[i].tasks.findIndex(
+          (task) => task.id === editedTask.id
+        );
+
+        if (oldStatusTaskIndex !== -1) {
+          board.statuses[i].tasks.splice(oldStatusTaskIndex, 1);
+          board.statuses[i].totalTasks = board.statuses[i].tasks.length;
+          board.statuses[statusIndex].tasks.push(editedTask);
+          board.statuses[statusIndex].totalTasks =
+            board.statuses[statusIndex].tasks.length;
+          break;
+        }
+      }
+    });
+  },
   deleteTask: (taskId, boardIndex, statusIndex) =>
     set((state) => {
       state.boards[boardIndex].statuses[statusIndex].tasks = state.boards[
@@ -56,7 +82,6 @@ const createBoardSlice: StateCreator<
       state.boards[boardIndex].statuses[statusIndex].totalTasks =
         state.boards[boardIndex].statuses[statusIndex].tasks.length;
     }),
-  EditTask: (task, boardIndex, statusIndex) => {},
   changeStatus(task, newStatusId, boardIndex) {
     set((state) => {
       const board = state.boards[boardIndex];

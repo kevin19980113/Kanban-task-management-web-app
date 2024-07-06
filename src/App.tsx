@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import { Button } from "./components/ui/button";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { useState } from "react";
+import { Toaster } from "sonner";
 
 function App() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -22,18 +23,19 @@ function App() {
             toggleSidebar={toggleSidebar}
             isSidebarVisible={isSidebarVisible}
           />
-          <div className="w-full h-screen flex flex-col items-center">
+          <div className="flex-auto overflow-hidden h-screen flex flex-col items-center">
             <Header isSidebarVisible={isSidebarVisible} />
             <MainBoard />
             <Button
-              className="absolute -left-3 bottom-10 md:block hidden rounded-r-full"
+              className="absolute -left-5 bottom-10 md:block hidden rounded-r-full"
               onClick={() => toggleSidebar()}
             >
-              <Eye className="size-5" />
+              <Eye className="size-5 ml-3" />
             </Button>
           </div>
         </div>
       </MaxWidthWrapper>
+      <Toaster position="top-center" richColors />
     </ThemeProvider>
   );
 }

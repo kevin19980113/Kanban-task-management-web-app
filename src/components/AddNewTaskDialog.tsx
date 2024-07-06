@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AddNewTaskForm from "./AddNewTaskForm";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -8,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import AddOrEditTaskForm from "./AddOrEditTaskFrom";
 
 export default function AddNewTaskDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,7 +29,7 @@ export default function AddNewTaskDialog() {
           <DialogTitle>Add New Task</DialogTitle>
         </DialogHeader>
 
-        <AddNewTaskForm onClose={handleDialogClose} />
+        <AddOrEditTaskForm onClose={handleDialogClose} action="Add" />
       </DialogContent>
     </Dialog>
   );

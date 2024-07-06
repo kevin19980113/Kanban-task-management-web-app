@@ -11,8 +11,27 @@ import { useShallow } from "zustand/react/shallow";
 import { v4 as uuidv4 } from "uuid";
 import { Textarea } from "./ui/textarea";
 import StatusSelect from "./StatusSelect";
+import { Task } from "@/types/board";
 
-export default function AddNewTaskForm({ onClose }: { onClose: () => void }) {
+export default function AddOrEditTaskForm({
+  action,
+  onClose,
+  task,
+}: {
+  action: "Add" | "Edit";
+  onClose: () => void;
+  task?: Task;
+}) {
+  const { boards, addTask, EditTask, boardIndex, statusIndex } = useBoardStore(
+    useShallow((state) => ({
+      boards: state.boards,
+      addTask: state.addTask,
+      EditTask: state.EditTask,
+      boardIndex: state.boardIndex,
+      statusIndex: state.statusIndex,
+    }))
+  );
+
   const {
     register,
     handleSubmit,
@@ -20,21 +39,22 @@ export default function AddNewTaskForm({ onClose }: { onClose: () => void }) {
     formState: { errors },
   } = useForm<TaskSchemaType>({
     resolver: zodResolver(TaskSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      subTasks: [{ subTask: "" }],
-      status: "",
-    },
+    defaultValues: task
+      ? {
+          title: task.title,
+          description: task.description,
+          subTasks: task.subTasks.map((subTask) => ({
+            subTask: subTask.title,
+          })),
+          status: boards[boardIndex].statuses[statusIndex].title,
+        }
+      : {
+          title: "",
+          description: "",
+          subTasks: [{ subTask: "" }],
+          status: "",
+        },
   });
-
-  const { boards, addTask, boardIndex } = useBoardStore(
-    useShallow((state) => ({
-      boards: state.boards,
-      addTask: state.addTask,
-      boardIndex: state.boardIndex,
-    }))
-  );
 
   const handleAddTask = (formData: TaskSchemaType) => {
     const subTasks = formData.subTasks.map((subTask) => ({
@@ -43,24 +63,57 @@ export default function AddNewTaskForm({ onClose }: { onClose: () => void }) {
       done: false,
     }));
 
-    const statusIndex = boards[boardIndex].statuses.findIndex(
+    const newStatusIndex = boards[boardIndex].statuses.findIndex(
       (status) => status.title === formData.status
     );
 
-    const task = {
+    const newTask = {
       id: uuidv4(),
       title: formData.title,
       description: formData.description,
       subTasks,
     };
-    addTask(task, boardIndex, statusIndex);
+    addTask(newTask, boardIndex, newStatusIndex);
+    onClose();
+  };
+
+  const handleEditTask = (formData: TaskSchemaType) => {
+    const existingSubTasks = new Map(
+      task?.subTasks.map((subTask) => [subTask.id, subTask.done])
+    );
+
+    const subTasks = formData.subTasks.map((subTask) => {
+      const existingId = task?.subTasks.find(
+        (subT) => subT.title === subTask.subTask
+      )?.id;
+      return {
+        id: existingId || uuidv4(),
+        title: subTask.subTask,
+        done: existingId ? existingSubTasks.get(existingId) || false : false,
+      };
+    });
+
+    const editedStatusIndex = boards[boardIndex].statuses.findIndex(
+      (status) => status.title === formData.status
+    );
+
+    const isEditedStatus = statusIndex !== editedStatusIndex;
+
+    const editedTask = {
+      id: task?.id as string,
+      title: formData.title,
+      description: formData.description,
+      subTasks,
+    };
+
+    EditTask(editedTask, boardIndex, editedStatusIndex, isEditedStatus);
     onClose();
   };
 
   return (
     <form
       className="w-full grid grid-cols-1 gap-y-4"
-      onSubmit={handleSubmit(handleAddTask)}
+      onSubmit={handleSubmit(action === "Add" ? handleAddTask : handleEditTask)}
     >
       <div className="grid grid-cols-1 items-left gap-y-3">
         <Label htmlFor="title">Title</Label>
@@ -112,7 +165,9 @@ export default function AddNewTaskForm({ onClose }: { onClose: () => void }) {
         )}
       </div>
 
-      <Button type="submit">Create Task</Button>
+      <Button type="submit">
+        {action === "Add" ? "Create Task" : "Save Changes"}
+      </Button>
     </form>
   );
 }
