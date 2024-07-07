@@ -94,9 +94,9 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       backgroundImage: {
-        "logo-mobile": "url('src/assets/logo-mobile.svg')",
-        "logo-light": "url('src/assets/logo-light.svg')",
-        "logo-dark": "url('src/assets/logo-dark.svg')",
+        "logo-mobile": "url('/src/assets/logo-mobile.svg')",
+        "logo-light": "url('/src/assets/logo-light.svg')",
+        "logo-dark": "url('/src/assets/logo-dark.svg')",
       },
     },
   },
