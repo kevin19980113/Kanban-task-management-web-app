@@ -1,4 +1,4 @@
-import AddNewBoardForm from "./AddNewBoardForm";
+import AddOrEditBoardForm from "./AddOrEditBoardForm";
 import { DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 export default function AddNewBoardDialog({
@@ -12,7 +12,7 @@ export default function AddNewBoardDialog({
         <DialogTitle>Add New Board</DialogTitle>
       </DialogHeader>
 
-      <AddNewBoardForm onClose={handleClose} />
+      <AddOrEditBoardForm onClose={handleClose} action="Add" />
     </DialogContent>
   );
 }

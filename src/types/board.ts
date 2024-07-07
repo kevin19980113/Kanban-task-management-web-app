@@ -37,6 +37,7 @@ export type StatusState = {
   id: string;
   title: string;
   tasks: Task[];
+  color: string;
   totalTasks: number;
 };
 
@@ -54,6 +55,7 @@ export type BoardState = {
 type BoardAction = {
   addBoard: (newBoard: Board) => void;
   deleteBoard: (boardId: string) => void;
+  editBoard: (editedBoard: Board, boardIndex: number) => void;
   updateTotalBoards: () => void;
 };
 
@@ -67,6 +69,20 @@ type IndexAction = {
   setStatusIndex: (statusIndex: number) => void;
 };
 
+type Color = {
+  hex: string;
+};
+
+type ColorState = {
+  colors: Color[];
+};
+
+type ColorAction = {
+  setColor: (newColor: Color, index: number) => void;
+};
+
 export type IndexSlice = IndexState & IndexAction;
 
 export type BoardSlice = BoardState & BoardAction & TaskAction & StatusAction;
+
+export type ColorSlice = ColorState & ColorAction;

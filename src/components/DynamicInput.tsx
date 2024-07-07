@@ -13,7 +13,8 @@ import {
   Path,
 } from "react-hook-form";
 import { BoardSchemaType, TaskSchemaType } from "@/lib/schema";
-import { cn } from "@/lib/utils";
+import { cn, defaultColor } from "@/lib/utils";
+import ColorPicker from "./ColorPicker";
 
 type InputProps<T extends BoardSchemaType | TaskSchemaType> = {
   control: Control<T>;
@@ -22,11 +23,24 @@ type InputProps<T extends BoardSchemaType | TaskSchemaType> = {
   fieldName: T extends BoardSchemaType ? "columns" : "subTasks";
   label: string;
   placeholder: string;
+  action: "Add" | "Edit" | "Task";
+  selectedColors: string[];
+  onColorChange: (color: string, index: number) => void;
 };
 
 export default function DynamicInput<
   T extends BoardSchemaType | TaskSchemaType
->({ control, register, errors, fieldName, label, placeholder }: InputProps<T>) {
+>({
+  control,
+  register,
+  errors,
+  fieldName,
+  label,
+  placeholder,
+  action,
+  selectedColors,
+  onColorChange,
+}: InputProps<T>) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: fieldName as ArrayPath<T>,
@@ -61,6 +75,14 @@ export default function DynamicInput<
                 })}
                 placeholder={placeholder}
               />
+              {action !== "Task" && (
+                <ColorPicker
+                  index={index}
+                  action={action}
+                  onColorChange={(color) => onColorChange(color, index)}
+                  initialColor={selectedColors[index] || defaultColor}
+                />
+              )}
               <X
                 className="size-5 text-medium-grey hover:text-main-purple hover:scale-105 cursor-pointer"
                 onClick={() => remove(index)}

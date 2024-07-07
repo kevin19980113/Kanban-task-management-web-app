@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, isTitleDuplicate } from "@/lib/utils";
 import DynamicInput from "./DynamicInput";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Textarea } from "./ui/textarea";
 import StatusSelect from "./StatusSelect";
 import { Task } from "@/types/board";
+import { toast } from "sonner";
 
 export default function AddOrEditTaskForm({
   action,
@@ -57,6 +58,12 @@ export default function AddOrEditTaskForm({
   });
 
   const handleAddTask = (formData: TaskSchemaType) => {
+    if (
+      isTitleDuplicate(formData.title, "Task", boards, boardIndex, statusIndex)
+    ) {
+      toast.warning(`Task name '${formData.title}' already exists!`);
+      return;
+    }
     const subTasks = formData.subTasks.map((subTask) => ({
       id: uuidv4(),
       title: subTask.subTask,
@@ -78,18 +85,20 @@ export default function AddOrEditTaskForm({
   };
 
   const handleEditTask = (formData: TaskSchemaType) => {
-    const existingSubTasks = new Map(
-      task?.subTasks.map((subTask) => [subTask.id, subTask.done])
-    );
+    if (
+      task?.title !== formData.title &&
+      isTitleDuplicate(formData.title, "Task", boards, boardIndex, statusIndex)
+    ) {
+      toast.warning(`Task name '${formData.title}' already exists!`);
+      return;
+    }
 
-    const subTasks = formData.subTasks.map((subTask) => {
-      const existingId = task?.subTasks.find(
-        (subT) => subT.title === subTask.subTask
-      )?.id;
+    const subTasks = formData.subTasks.map((subTask, index) => {
+      const existingSubTask = task?.subTasks[index];
       return {
-        id: existingId || uuidv4(),
+        id: existingSubTask?.id || uuidv4(),
         title: subTask.subTask,
-        done: existingId ? existingSubTasks.get(existingId) || false : false,
+        done: existingSubTask ? existingSubTask.done : false,
       };
     });
 
@@ -100,7 +109,7 @@ export default function AddOrEditTaskForm({
     const isEditedStatus = statusIndex !== editedStatusIndex;
 
     const editedTask = {
-      id: task?.id as string,
+      id: task!.id,
       title: formData.title,
       description: formData.description,
       subTasks,
@@ -154,6 +163,7 @@ export default function AddOrEditTaskForm({
         fieldName="subTasks"
         label="Subtasks"
         placeholder="e.g Make coffee"
+        action="Task"
       />
 
       <div className="grid grid-cols-1 items-left gap-y-3">

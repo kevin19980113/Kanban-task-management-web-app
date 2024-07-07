@@ -23,7 +23,16 @@ export default function StatusesGrid() {
       {boards[boardIndex].statuses.map((status) => (
         <div key={status.id} className="grid grid-cols-1 px-4">
           <div className="flex flex-col items-start gap-y-6 text-left text-medium-grey tracking-wider">
-            <div className="w-full mb-4 text-base tracking-widest">{`${status.title} (${status.totalTasks})`}</div>
+            <div className="flex gap-x-3 items-center justify-start">
+              <div
+                className="size-4 rounded-full mb-4 text-base tracking-widest"
+                style={{ backgroundColor: status.color }}
+              />
+              <div className="w-full mb-4 text-base tracking-widest">
+                {`${status.title} (${status.totalTasks})`}
+              </div>
+            </div>
+
             {status.tasks.map((task) => (
               <TaskCard key={task.id} task={task} status={status} />
             ))}

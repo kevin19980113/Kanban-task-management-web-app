@@ -12,11 +12,12 @@ import { Label } from "./ui/label";
 import { useForm } from "react-hook-form";
 import { ColumnSchema, ColumnSchemaType } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn, isTitleDuplicate } from "@/lib/utils";
+import { cn, defaultColor, isTitleDuplicate } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
 import { useShallow } from "zustand/react/shallow";
 import { useBoardStore } from "@/hooks/use-board";
 import { toast } from "sonner";
+import ColorPicker from "./ColorPicker";
 
 export default function AddNewColumnDialog({
   sort,
@@ -24,11 +25,13 @@ export default function AddNewColumnDialog({
   sort: "IN MAIN BOARD" | "IN COLUMN";
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
   const { boards, addStatus, boardIndex } = useBoardStore(
     useShallow((state) => ({
       boards: state.boards,
       addStatus: state.addStatus,
       boardIndex: state.boardIndex,
+      colors: state.colors,
     }))
   );
   const {
@@ -53,6 +56,7 @@ export default function AddNewColumnDialog({
       title: formData.column,
       tasks: [],
       totalTasks: 0,
+      color: selectedColor,
     };
     addStatus(newStatus, boardIndex);
     setIsDialogOpen(false);
@@ -61,6 +65,7 @@ export default function AddNewColumnDialog({
   useEffect(() => {
     if (!isDialogOpen) {
       reset();
+      setSelectedColor(defaultColor);
     }
   }, [isDialogOpen, reset]);
 
@@ -89,14 +94,23 @@ export default function AddNewColumnDialog({
           className="w-full grid grid-cols-1 gap-y-8"
           onSubmit={handleSubmit(handleAddColumn)}
         >
-          <div className="flex flex-col items-start gap-y-2">
+          <div className="grid grid-cols-1 items-start gap-y-2">
             <Label htmlFor="title">title</Label>
-            <Input
-              {...register("column")}
-              className={cn({
-                "border-red-500 focus-visible:ring-red-500": errors.column,
-              })}
-            />
+            <div className="flex items-center gap-x-4">
+              <Input
+                {...register("column")}
+                className={cn({
+                  "border-red-500 focus-visible:ring-red-500": errors.column,
+                })}
+              />
+
+              <ColorPicker
+                index={boards[boardIndex].statuses.length}
+                action="Add"
+                onColorChange={(color) => setSelectedColor(color)}
+                initialColor={selectedColor}
+              />
+            </div>
             {errors.column && (
               <p className="text-red-500 text-xs md:text-sm">
                 {errors.column.message}

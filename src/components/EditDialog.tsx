@@ -1,7 +1,9 @@
 import { Task } from "@/types/board";
-import AddNewBoardForm from "./AddNewBoardForm";
 import AddOrEditTaskForm from "./AddOrEditTaskFrom";
 import { DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import AddOrEditBoardForm from "./AddOrEditBoardForm";
+import { useBoardStore } from "@/hooks/use-board";
+import { useShallow } from "zustand/react/shallow";
 
 export default function EditDialog({
   sort,
@@ -12,6 +14,13 @@ export default function EditDialog({
   handleDialogClose: () => void;
   task?: Task;
 }) {
+  const { boards, boardIndex } = useBoardStore(
+    useShallow((state) => ({
+      boards: state.boards,
+      boardIndex: state.boardIndex,
+    }))
+  );
+
   return (
     <DialogContent aria-describedby={undefined}>
       <DialogHeader>
@@ -25,7 +34,11 @@ export default function EditDialog({
           task={task}
         />
       ) : (
-        <AddNewBoardForm onClose={handleDialogClose} />
+        <AddOrEditBoardForm
+          onClose={handleDialogClose}
+          action="Edit"
+          board={boards[boardIndex]}
+        />
       )}
     </DialogContent>
   );

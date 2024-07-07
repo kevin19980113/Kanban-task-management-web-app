@@ -35,7 +35,7 @@ export default function Sidebar({
           <img
             src={theme === "light" ? darkLogo : lightLogo}
             alt="logo"
-            className="w-8/12 ml-4"
+            className="w-36 ml-4"
           />
 
           <BoarderList />

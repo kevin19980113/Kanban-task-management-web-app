@@ -22,7 +22,7 @@ export default function Header({
         <div className="flex flex-auto overflow-hidden items-center gap-x-3">
           {!isSidebarVisible && (
             <div className="flex-shrink-0 items-center gap-x-2 hidden md:flex">
-              <div className="size-4 md:w-36 md:size-10 bg-logo-mobile md:bg-logo-dark md:dark:bg-logo-light bg-contain bg-no-repeat bg-center"></div>
+              <div className="size-4 md:w-36 md:h-10 bg-logo-mobile md:bg-logo-dark md:dark:bg-logo-light bg-no-repeat bg-contain bg-center"></div>
               <div className="bg-medium-grey w-px h-10 md:h-14"></div>
             </div>
           )}

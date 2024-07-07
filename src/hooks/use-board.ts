@@ -1,5 +1,11 @@
 import { StateCreator, create } from "zustand";
-import { BoardSlice, BoardState, IndexSlice, IndexState } from "@/types/board";
+import {
+  BoardSlice,
+  BoardState,
+  ColorSlice,
+  IndexSlice,
+  IndexState,
+} from "@/types/board";
 import {
   createJSONStorage,
   persist,
@@ -32,6 +38,10 @@ const createBoardSlice: StateCreator<
   deleteBoard: (boardId) =>
     set((state) => {
       state.boards = state.boards.filter((board) => board.id !== boardId);
+    }),
+  editBoard: (editedBoard, boardIndex) =>
+    set((state) => {
+      state.boards[boardIndex] = editedBoard;
     }),
   updateTotalBoards: () =>
     set((state) => {
@@ -136,12 +146,26 @@ const createIndexSlice: StateCreator<
     }),
 });
 
-export const useBoardStore = create<BoardSlice & IndexSlice>()(
+const createColorSlice: StateCreator<
+  ColorSlice,
+  [["zustand/immer", never], ["zustand/subscribeWithSelector", never]],
+  [],
+  ColorSlice
+> = (set) => ({
+  colors: [],
+  setColor: (newColor, index) =>
+    set((state) => {
+      state.colors[index] = newColor;
+    }),
+});
+
+export const useBoardStore = create<BoardSlice & IndexSlice & ColorSlice>()(
   subscribeWithSelector(
     persist(
       immer((...a) => ({
         ...createBoardSlice(...a),
         ...createIndexSlice(...a),
+        ...createColorSlice(...a),
       })),
       {
         name: "board-storage",
