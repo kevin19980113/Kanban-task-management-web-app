@@ -31,7 +31,6 @@ export default function AddNewColumnDialog({
       boards: state.boards,
       addStatus: state.addStatus,
       boardIndex: state.boardIndex,
-      colors: state.colors,
     }))
   );
   const {
@@ -94,7 +93,7 @@ export default function AddNewColumnDialog({
           className="w-full grid grid-cols-1 gap-y-8"
           onSubmit={handleSubmit(handleAddColumn)}
         >
-          <div className="grid grid-cols-1 items-start gap-y-2">
+          <div className="grid grid-cols-1 items-start gap-y-4">
             <Label htmlFor="title">title</Label>
             <div className="flex items-center gap-x-4">
               <Input
@@ -105,8 +104,6 @@ export default function AddNewColumnDialog({
               />
 
               <ColorPicker
-                index={boards[boardIndex].statuses.length}
-                action="Add"
                 onColorChange={(color) => setSelectedColor(color)}
                 initialColor={selectedColor}
               />

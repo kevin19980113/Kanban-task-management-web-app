@@ -1,11 +1,5 @@
 import { StateCreator, create } from "zustand";
-import {
-  BoardSlice,
-  BoardState,
-  ColorSlice,
-  IndexSlice,
-  IndexState,
-} from "@/types/board";
+import { BoardSlice, BoardState, IndexSlice, IndexState } from "@/types/board";
 import {
   createJSONStorage,
   persist,
@@ -145,27 +139,12 @@ const createIndexSlice: StateCreator<
       state.statusIndex = statusIndex;
     }),
 });
-
-const createColorSlice: StateCreator<
-  ColorSlice,
-  [["zustand/immer", never], ["zustand/subscribeWithSelector", never]],
-  [],
-  ColorSlice
-> = (set) => ({
-  colors: [],
-  setColor: (newColor, index) =>
-    set((state) => {
-      state.colors[index] = newColor;
-    }),
-});
-
-export const useBoardStore = create<BoardSlice & IndexSlice & ColorSlice>()(
+export const useBoardStore = create<BoardSlice & IndexSlice>()(
   subscribeWithSelector(
     persist(
       immer((...a) => ({
         ...createBoardSlice(...a),
         ...createIndexSlice(...a),
-        ...createColorSlice(...a),
       })),
       {
         name: "board-storage",

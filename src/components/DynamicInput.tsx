@@ -77,8 +77,6 @@ export default function DynamicInput<
               />
               {action !== "Task" && (
                 <ColorPicker
-                  index={index}
-                  action={action}
                   onColorChange={(color) => onColorChange(color, index)}
                   initialColor={selectedColors[index] || defaultColor}
                 />

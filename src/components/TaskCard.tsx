@@ -47,7 +47,7 @@ export default function TaskCard({
       >
         <div
           className="bg-white dark:bg-dark-grey rounded-lg flex flex-col items-start gap-y-1 px-5 py-6 
-        cursor-pointer group"
+        cursor-pointer shadow-xl group"
         >
           <p className="text-black dark:text-white font-semibold text-base group-hover:text-main-purple break-all">
             {task.title}

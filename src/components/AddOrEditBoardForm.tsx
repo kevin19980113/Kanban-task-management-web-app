@@ -48,7 +48,6 @@ export default function AddOrEditBoardForm({
     editBoard,
     setBoardIndex,
     totalBoards,
-    colors,
   } = useBoardStore(
     useShallow((state) => ({
       boards: state.boards,
@@ -57,7 +56,6 @@ export default function AddOrEditBoardForm({
       editBoard: state.editBoard,
       setBoardIndex: state.setBoardIndex,
       totalBoards: state.totalBoards,
-      colors: state.colors,
     }))
   );
 
@@ -129,8 +127,6 @@ export default function AddOrEditBoardForm({
         };
       }),
     };
-
-    console.log(editedBoard);
     editBoard(editedBoard, boardIndex);
     onClose();
   };

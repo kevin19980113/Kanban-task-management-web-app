@@ -25,7 +25,7 @@ export default function StatusesGrid() {
           <div className="flex flex-col items-start gap-y-6 text-left text-medium-grey tracking-wider">
             <div className="flex gap-x-3 items-center justify-start">
               <div
-                className="size-4 rounded-full mb-4 text-base tracking-widest"
+                className="size-4 flex-shrink-0 rounded-full mb-4 text-base tracking-widest"
                 style={{ backgroundColor: status.color }}
               />
               <div className="w-full mb-4 text-base tracking-widest">
