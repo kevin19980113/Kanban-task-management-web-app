@@ -10,5 +10,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/kanban-task-management-web-app/",
+  base: "/Kanban-task-management-web-app/",
 });
