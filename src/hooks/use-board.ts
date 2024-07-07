@@ -45,6 +45,28 @@ const createBoardSlice: StateCreator<
     set((state) => {
       state.boards[boardIndex].statuses.push(newStatus);
     }),
+  changeStatus(task, newStatusId, boardIndex) {
+    set((state) => {
+      const board = state.boards[boardIndex];
+
+      board.statuses.forEach((status) => {
+        const taskIndex = status.tasks.findIndex((t) => t.id === task.id);
+        if (taskIndex !== -1) {
+          status.tasks.splice(taskIndex, 1);
+          status.totalTasks = status.tasks.length;
+        }
+      });
+
+      const newStatusIndex = board.statuses.findIndex(
+        (status) => status.id === newStatusId
+      );
+      if (newStatusIndex !== -1) {
+        board.statuses[newStatusIndex].tasks.push(task);
+        board.statuses[newStatusIndex].totalTasks =
+          board.statuses[newStatusIndex].tasks.length;
+      }
+    });
+  },
   addTask: (newTask, boardIndex, newStatusIndex) =>
     set((state) => {
       state.boards[boardIndex].statuses[newStatusIndex].tasks.push(newTask);
@@ -86,28 +108,6 @@ const createBoardSlice: StateCreator<
       state.boards[boardIndex].statuses[statusIndex].totalTasks =
         state.boards[boardIndex].statuses[statusIndex].tasks.length;
     }),
-  changeStatus(task, newStatusId, boardIndex) {
-    set((state) => {
-      const board = state.boards[boardIndex];
-
-      board.statuses.forEach((status) => {
-        const taskIndex = status.tasks.findIndex((t) => t.id === task.id);
-        if (taskIndex !== -1) {
-          status.tasks.splice(taskIndex, 1);
-          status.totalTasks = status.tasks.length;
-        }
-      });
-
-      const newStatusIndex = board.statuses.findIndex(
-        (status) => status.id === newStatusId
-      );
-      if (newStatusIndex !== -1) {
-        board.statuses[newStatusIndex].tasks.push(task);
-        board.statuses[newStatusIndex].totalTasks =
-          board.statuses[newStatusIndex].tasks.length;
-      }
-    });
-  },
   subTaskToggle: (taskId, subTaskId, boardIndex, statusIndex) => {
     set((state) => {
       state.boards[boardIndex].statuses[statusIndex].tasks.map((task) => {
@@ -139,6 +139,7 @@ const createIndexSlice: StateCreator<
       state.statusIndex = statusIndex;
     }),
 });
+
 export const useBoardStore = create<BoardSlice & IndexSlice>()(
   subscribeWithSelector(
     persist(

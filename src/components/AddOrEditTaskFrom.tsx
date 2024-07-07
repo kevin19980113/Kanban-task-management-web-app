@@ -45,14 +45,14 @@ export default function AddOrEditTaskForm({
           title: task.title,
           description: task.description,
           subTasks: task.subTasks.map((subTask) => ({
-            subTask: subTask.title,
+            title: subTask.title,
           })),
           status: boards[boardIndex].statuses[statusIndex].title,
         }
       : {
           title: "",
           description: "",
-          subTasks: [{ subTask: "" }],
+          subTasks: [{ title: "" }],
           status: "",
         },
   });
@@ -66,7 +66,7 @@ export default function AddOrEditTaskForm({
     }
     const subTasks = formData.subTasks.map((subTask) => ({
       id: uuidv4(),
-      title: subTask.subTask,
+      title: subTask.title,
       done: false,
     }));
 
@@ -97,7 +97,7 @@ export default function AddOrEditTaskForm({
       const existingSubTask = task?.subTasks[index];
       return {
         id: existingSubTask?.id || uuidv4(),
-        title: subTask.subTask,
+        title: subTask.title,
         done: existingSubTask ? existingSubTask.done : false,
       };
     });
@@ -163,7 +163,7 @@ export default function AddOrEditTaskForm({
         fieldName="subTasks"
         label="Subtasks"
         placeholder="e.g Make coffee"
-        action="Task"
+        action={action}
       />
 
       <div className="grid grid-cols-1 items-left gap-y-3">

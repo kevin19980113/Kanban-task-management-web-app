@@ -16,16 +16,16 @@ import { BoardSchemaType, TaskSchemaType } from "@/lib/schema";
 import { cn, defaultColor } from "@/lib/utils";
 import ColorPicker from "./ColorPicker";
 
-type InputProps<T extends BoardSchemaType | TaskSchemaType> = {
+type DynamicInputProps<T extends BoardSchemaType | TaskSchemaType> = {
   control: Control<T>;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
   fieldName: T extends BoardSchemaType ? "columns" : "subTasks";
   label: string;
   placeholder: string;
-  action: "Add" | "Edit" | "Task";
-  selectedColors: string[];
-  onColorChange: (color: string, index: number) => void;
+  action: "Add" | "Edit";
+  selectedColors?: string[];
+  onColorChange?: (color: string, index: number) => void;
 };
 
 export default function DynamicInput<
@@ -37,10 +37,9 @@ export default function DynamicInput<
   fieldName,
   label,
   placeholder,
-  action,
   selectedColors,
   onColorChange,
-}: InputProps<T>) {
+}: DynamicInputProps<T>) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: fieldName as ArrayPath<T>,
@@ -48,17 +47,14 @@ export default function DynamicInput<
   });
 
   const getInputName = (index: number): Path<T> => {
-    return `${fieldName}.${index}.${
-      fieldName === "columns" ? "column" : "subTask"
-    }` as Path<T>;
+    return `${fieldName}.${index}.title` as Path<T>;
   };
 
   const hasErrorAtIndex = (index: number): boolean => {
     const fieldErrors = errors[fieldName] as
       | { [key: number]: { [key: string]: { message?: string } } }
       | undefined;
-    const subFieldName = fieldName === "columns" ? "column" : "subTask";
-    return !!(fieldErrors && fieldErrors[index]?.[subFieldName]?.message);
+    return !!(fieldErrors && fieldErrors[index]?.title?.message);
   };
   return (
     <ScrollArea className="max-h-[250px]">
@@ -75,10 +71,10 @@ export default function DynamicInput<
                 })}
                 placeholder={placeholder}
               />
-              {action !== "Task" && (
+              {fieldName === "columns" && (
                 <ColorPicker
-                  onColorChange={(color) => onColorChange(color, index)}
-                  initialColor={selectedColors[index] || defaultColor}
+                  onColorChange={(color) => onColorChange?.(color, index)}
+                  initialColor={selectedColors?.[index] ?? defaultColor}
                 />
               )}
               <X
@@ -88,11 +84,7 @@ export default function DynamicInput<
             </div>
             {hasErrorAtIndex(index) && (
               <p className="text-red-500 text-xs md:text-sm">
-                {
-                  (errors[fieldName] as any)?.[index]?.[
-                    fieldName === "columns" ? "column" : "subTask"
-                  ]?.message
-                }
+                {(errors[fieldName] as any)?.[index]?.title?.message}
               </p>
             )}
           </Fragment>
@@ -103,7 +95,7 @@ export default function DynamicInput<
             <p className="text-red-500 text-xs md:text-sm">
               {
                 (
-                  (errors[fieldName as keyof typeof errors] as any)?.root as {
+                  errors[fieldName as keyof typeof errors]?.root as {
                     message?: string;
                   }
                 )?.message
@@ -114,13 +106,7 @@ export default function DynamicInput<
         <Button
           type="button"
           variant="secondary"
-          onClick={() =>
-            append(
-              fieldName === "columns"
-                ? { column: "" }
-                : ({ subTask: "" } as any)
-            )
-          }
+          onClick={() => append({ title: "" } as any)}
         >
           + Add New {fieldName === "columns" ? "Column" : "Subtask"}
         </Button>

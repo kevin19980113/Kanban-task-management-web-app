@@ -42,6 +42,7 @@ export default function StatusSelect({
     }
   };
 
+  // If control prop is provided, use it for form control(ADD/EDIT TASK FORM)
   if (control) {
     return (
       <Controller
@@ -72,6 +73,7 @@ export default function StatusSelect({
 
   const currentStatusTitle = boards[boardIndex].statuses[statusIndex].title;
 
+  //Otherwise, use the current status title for task Card to change status
   return (
     <Select onValueChange={handleStatusChange} value={currentStatusTitle}>
       <Label htmlFor="status">Status</Label>
@@ -80,7 +82,7 @@ export default function StatusSelect({
           "border-red-500 focus-visible:ring-red-500": isError,
         })}
       >
-        <SelectValue placeholder="Select a Status" />
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         {boards[boardIndex].statuses.map((status) => (

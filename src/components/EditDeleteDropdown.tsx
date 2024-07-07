@@ -81,6 +81,7 @@ export default function EditDeleteDropdown({
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* ALERTDIALOG => DELETE DIALOG */}
         <DeleteDialog
           sort={sort}
           description={`Are you sure you want to delete the '${
@@ -90,6 +91,7 @@ export default function EditDeleteDropdown({
           }' ${sort}? This action will remove all columns and tasks and can not be reversed.`}
           task={task}
         />
+        {/* DIALOG => EDIT DIALOG */}
         <EditDialog sort={sort} handleDialogClose={closeDialog} task={task} />
       </Dialog>
     </AlertDialog>

@@ -10,13 +10,13 @@ export const ColumnSchema = z.object({
 });
 
 export const ColumnArraySchema = z.object({
-  column: z.string().refine((value) => value.trim().length > 0, {
+  title: z.string().refine((value) => value.trim().length > 0, {
     message: "Column cannot be only whitespace",
   }),
 });
 
 const subTaskSchema = z.object({
-  subTask: z
+  title: z
     .string()
     .min(1, "Subtask is required")
     .refine((value) => value.trim().length > 0, {

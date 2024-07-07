@@ -33,7 +33,7 @@ export default function AddOrEditBoardForm({
       ? {
           boardName: board.title,
           columns: board.statuses.map((status) => ({
-            column: status.title,
+            title: status.title,
           })),
         }
       : {
@@ -76,10 +76,19 @@ export default function AddOrEditBoardForm({
       toast.warning(`Board name '${formData.boardName}' already exists!`);
       return;
     }
+    const hasDuplicateColumns = formData.columns.some(
+      (column, index, self) =>
+        self.findIndex((c) => c.title === column.title) !== index
+    );
+
+    if (hasDuplicateColumns) {
+      toast.warning("Duplicate column names are not allowed!");
+      return;
+    }
 
     const statuses = formData.columns.map((column, index) => ({
       id: uuidv4(),
-      title: column.column,
+      title: column.title,
       tasks: [],
       totalTasks: 0,
       color: selectedColors[index] || defaultColor,
@@ -105,7 +114,7 @@ export default function AddOrEditBoardForm({
 
     const hasDuplicateColumns = formData.columns.some(
       (column, index, self) =>
-        self.findIndex((c) => c.column === column.column) !== index
+        self.findIndex((c) => c.title === column.title) !== index
     );
 
     if (hasDuplicateColumns) {
@@ -120,7 +129,7 @@ export default function AddOrEditBoardForm({
         const existingStatus = board?.statuses[index];
         return {
           id: existingStatus?.id || uuidv4(),
-          title: column.column,
+          title: column.title,
           tasks: existingStatus?.tasks || [],
           totalTasks: existingStatus?.totalTasks || 0,
           color: selectedColors[index] || defaultColor,

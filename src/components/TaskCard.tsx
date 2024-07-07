@@ -32,7 +32,6 @@ export default function TaskCard({
   const subTaskDoneCount = task.subTasks.filter(
     (subTask) => subTask.done
   ).length;
-
   const subTaskTotalCounts = task.subTasks.length;
   const currentStatusIndex = boards[boardIndex].statuses.findIndex(
     (s) => s.id === status.id
