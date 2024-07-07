@@ -14,6 +14,7 @@ import EditDeleteDropdown from "./EditDeleteDropdown";
 import { useShallow } from "zustand/react/shallow";
 import { useBoardStore } from "@/hooks/use-board";
 import { DropIndicator } from "./StatusColumn";
+import { motion } from "framer-motion";
 
 export default function TaskCard({
   task,
@@ -22,7 +23,7 @@ export default function TaskCard({
 }: {
   task: Task;
   status: StatusState;
-  handleDragStart: (e: React.DragEvent<HTMLElement>, task: Task) => void;
+  handleDragStart: Function;
 }) {
   const { boards, boardIndex, setStatusIndex } = useBoardStore(
     useShallow((state) => ({
@@ -49,7 +50,7 @@ export default function TaskCard({
       >
         <div>
           <DropIndicator beforeId={task.id} columnIndex={currentStatusIndex} />
-          <div
+          <motion.div
             className="bg-white dark:bg-dark-grey rounded-lg flex flex-col items-start gap-y-1 px-5 py-6 
         cursor-pointer shadow-xl group active:cursor-grabbing"
             draggable="true"
@@ -57,12 +58,14 @@ export default function TaskCard({
               setStatusIndex(currentStatusIndex);
               handleDragStart(e, task);
             }}
+            layout
+            layoutId={task.id}
           >
             <p className="text-black dark:text-white font-semibold text-base group-hover:text-main-purple break-all">
               {task.title}
             </p>
             <span className="text-medium-grey text-xs font-medium">{`${subTaskDoneCount} out of ${subTaskTotalCounts} subTasks`}</span>
-          </div>
+          </motion.div>
         </div>
       </DialogTrigger>
       <DialogContent aria-describedby={undefined}>

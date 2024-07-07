@@ -18,7 +18,7 @@ function App() {
   return (
     <ThemeProvider>
       <MaxWidthWrapper>
-        <div className="w-full flex-grow flex items-center">
+        <div className="w-full flex-grow flex items-center relative">
           <Sidebar
             toggleSidebar={toggleSidebar}
             isSidebarVisible={isSidebarVisible}

@@ -30,7 +30,7 @@ type TaskAction = {
   moveTask: (
     taskId: string,
     beforeTaskId: string,
-    boarderIndex: number,
+    boardIndex: number,
     fromStatusIndex: number,
     toStatusIndex: number
   ) => void;

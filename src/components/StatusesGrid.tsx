@@ -16,7 +16,7 @@ export default function StatusesGrid() {
 
   return (
     <div
-      className="w-full flex-grow p-4 md:p-8 grid relative"
+      className="w-full flex-grow p-4 md:p-8 grid"
       style={{
         gridTemplateColumns: `repeat(${
           boards[boardIndex].statuses.length + 1

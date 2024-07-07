@@ -124,43 +124,39 @@ const createBoardSlice: StateCreator<
   moveTask: (
     taskId,
     beforeTaskId,
-    boarderIndex,
+    boardIndex,
     fromStatusIndex,
     toStatusIndex
   ) => {
     set((state) => {
-      const board = state.boards[boarderIndex];
-      const fromTaskIndex = board.statuses[fromStatusIndex].tasks.findIndex(
+      const board = state.boards[boardIndex];
+      const fromStatus = board.statuses[fromStatusIndex];
+      const toStatus = board.statuses[toStatusIndex];
+      const fromTaskIndex = fromStatus.tasks.findIndex(
         (task) => task.id === taskId
       );
-      const beforeTaskIndex = board.statuses[toStatusIndex].tasks.findIndex(
+      const beforeTaskIndex = toStatus.tasks.findIndex(
         (task) => task.id === beforeTaskId
       );
 
-      if (
-        fromStatusIndex === toStatusIndex &&
-        (beforeTaskIndex === fromTaskIndex + 1 ||
-          beforeTaskIndex === fromTaskIndex)
-      )
-        return;
+      if (fromTaskIndex !== -1) {
+        let insertIndex = beforeTaskIndex;
 
-      const tempFromTask = [...board.statuses[fromStatusIndex].tasks].find(
-        (task) => task.id === taskId
-      );
+        if (fromStatusIndex === toStatusIndex) {
+          if (fromTaskIndex === beforeTaskIndex) return;
+          insertIndex =
+            fromTaskIndex > beforeTaskIndex
+              ? beforeTaskIndex
+              : beforeTaskIndex - 1;
+        }
 
-      if (fromTaskIndex !== -1 && tempFromTask) {
-        board.statuses[fromStatusIndex].tasks.splice(fromTaskIndex, 1);
-        board.statuses[toStatusIndex].tasks.splice(
-          beforeTaskId === "-1"
-            ? board.statuses[toStatusIndex].tasks.length
-            : beforeTaskIndex,
-          0,
-          tempFromTask
-        );
-        board.statuses[fromStatusIndex].totalTasks =
-          board.statuses[fromStatusIndex].tasks.length;
-        board.statuses[toStatusIndex].totalTasks =
-          board.statuses[toStatusIndex].tasks.length;
+        if (beforeTaskId === "-1") insertIndex = toStatus.tasks.length;
+
+        const [movedTask] = fromStatus.tasks.splice(fromTaskIndex, 1);
+
+        toStatus.tasks.splice(insertIndex, 0, movedTask);
+        fromStatus.totalTasks = fromStatus.tasks.length;
+        toStatus.totalTasks = toStatus.tasks.length;
       }
     });
   },
