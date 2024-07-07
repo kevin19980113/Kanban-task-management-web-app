@@ -27,6 +27,13 @@ type TaskAction = {
     statusIndex: number
   ) => void;
   changeStatus: (task: Task, newStatusId: string, boardIndex: number) => void;
+  moveTask: (
+    taskId: string,
+    beforeTaskId: string,
+    boarderIndex: number,
+    fromStatusIndex: number,
+    toStatusIndex: number
+  ) => void;
 };
 
 type StatusAction = {

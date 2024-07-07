@@ -49,7 +49,7 @@ export default function MobileBoardDropDown() {
               size="sm"
               className="flex items-center justify-start gap-x-1 group flex-grow "
             >
-              <span className="overflow-hidden text-ellipsis">
+              <span className="overflow-hidden text-ellipsis font-bold">
                 {boards[boardIndex] ? boards[boardIndex].title : "CREATE BOARD"}
               </span>
 

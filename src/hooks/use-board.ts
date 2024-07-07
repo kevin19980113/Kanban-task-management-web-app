@@ -121,6 +121,49 @@ const createBoardSlice: StateCreator<
       });
     });
   },
+  moveTask: (
+    taskId,
+    beforeTaskId,
+    boarderIndex,
+    fromStatusIndex,
+    toStatusIndex
+  ) => {
+    set((state) => {
+      const board = state.boards[boarderIndex];
+      const fromTaskIndex = board.statuses[fromStatusIndex].tasks.findIndex(
+        (task) => task.id === taskId
+      );
+      const beforeTaskIndex = board.statuses[toStatusIndex].tasks.findIndex(
+        (task) => task.id === beforeTaskId
+      );
+
+      if (
+        fromStatusIndex === toStatusIndex &&
+        (beforeTaskIndex === fromTaskIndex + 1 ||
+          beforeTaskIndex === fromTaskIndex)
+      )
+        return;
+
+      const tempFromTask = [...board.statuses[fromStatusIndex].tasks].find(
+        (task) => task.id === taskId
+      );
+
+      if (fromTaskIndex !== -1 && tempFromTask) {
+        board.statuses[fromStatusIndex].tasks.splice(fromTaskIndex, 1);
+        board.statuses[toStatusIndex].tasks.splice(
+          beforeTaskId === "-1"
+            ? board.statuses[toStatusIndex].tasks.length
+            : beforeTaskIndex,
+          0,
+          tempFromTask
+        );
+        board.statuses[fromStatusIndex].totalTasks =
+          board.statuses[fromStatusIndex].tasks.length;
+        board.statuses[toStatusIndex].totalTasks =
+          board.statuses[toStatusIndex].tasks.length;
+      }
+    });
+  },
 });
 
 const createIndexSlice: StateCreator<
