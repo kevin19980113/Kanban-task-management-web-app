@@ -16,7 +16,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <MaxWidthWrapper>
         <div className="w-full flex-grow flex items-center relative">
           <Sidebar
