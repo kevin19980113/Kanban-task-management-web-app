@@ -36,7 +36,7 @@ export default function TaskTrashbin({
 
   return (
     <div
-      className={`fixed top-10 w-[200px] md:w-[250px] h-[100px] left-1/2 -translate-x-1/2 rounded-full flex justify-center 
+      className={`fixed top-10 w-[200px] md:w-[250px] h-[70px] left-1/2 -translate-x-1/2 rounded-full flex justify-center 
     items-center bg-red-100 z-50 ${active ? "opacity-100" : "opacity-50"}`}
       onDragOver={handleDragOver}
       onDragLeave={hanldeDragLeave}

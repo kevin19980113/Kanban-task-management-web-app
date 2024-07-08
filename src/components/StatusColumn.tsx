@@ -42,7 +42,6 @@ export default function SatusColumn({
 
     const beforeTaskId = element.dataset.before || "-1";
 
-    console.log("Task ID: ", taskId, "Before Task ID: ", beforeTaskId);
     moveTask(taskId, beforeTaskId, boardIndex, statusIndex, columnIndex);
 
     setIsActive(false);
